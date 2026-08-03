@@ -11,6 +11,7 @@ export const miniSessionPackage = {
   name: "Seasonal Magic Mini Session",
   price: "£120",
   duration: "20–30 minutes",
+  featured: true,
   includes: [
     "Pre-session information & guidance",
     "Professionally styled seasonal set",
@@ -20,6 +21,26 @@ export const miniSessionPackage = {
     "Perfect for families, children, couples, pets & maternity",
   ],
 };
+
+export const milestonePackage = {
+  icon: "👨‍👩‍👧‍👦",
+  name: "Milestone Memories",
+  price: "£175–£200",
+  duration: "Growing personalities",
+  featured: true,
+  includes: [
+    "Designed to capture growing personalities & curiosity",
+    "Those beautiful in-between moments",
+    "Pre-session consultation",
+    "Planning & styling guidance",
+    "Your photography session",
+    "Private online gallery",
+    "Artwork & print options available",
+    "£50 booking fee to secure your date",
+  ],
+};
+
+export const specialPackages = [milestonePackage, miniSessionPackage];
 
 export const weddingPackages = [
   {
@@ -73,7 +94,6 @@ export const newbornPackages = [
       "£50 booking fee to secure your date",
     ],
   },
-  { ...miniSessionPackage, icon: "👶", name: "Seasonal Magic Mini Session" },
 ];
 
 export const familyPackages = [
@@ -89,19 +109,6 @@ export const familyPackages = [
       "£50 booking fee to secure your date",
     ],
   },
-  {
-    icon: "👨‍👩‍👧‍👦",
-    name: "Milestone Memories",
-    price: "£175–£200",
-    duration: "Growing personalities",
-    includes: [
-      "Designed to capture growing personalities & curiosity",
-      "Those beautiful in-between moments",
-      ...sharedCollectionIncludes,
-      "£50 booking fee to secure your date",
-    ],
-  },
-  { ...miniSessionPackage, icon: "👨‍👩‍👧‍👦" },
 ];
 
 export const cakeSmashPackages = [
@@ -119,7 +126,6 @@ export const cakeSmashPackages = [
       "£50 booking fee to secure your date",
     ],
   },
-  { ...miniSessionPackage, icon: "🎂", name: "Seasonal Magic Mini Session" },
 ];
 
 export const miniSessionIncludes = [

@@ -16,6 +16,7 @@ const portfolioItems: { label: string; page: Page }[] = [
   { label: "Newborn", page: "newborn" },
   { label: "Family", page: "family" },
   { label: "Cake Smash", page: "cakesmash" },
+  { label: "Minis & Milestones", page: "minis" },
 ];
 
 export function Header({

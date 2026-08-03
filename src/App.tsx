@@ -12,6 +12,7 @@ import {
   cakeSmashPackages,
   familyPackages,
   newbornPackages,
+  specialPackages,
   weddingPackages,
 } from "./data/packages";
 import { weddingFaqs } from "./data/faqs";
@@ -50,14 +51,20 @@ function Site() {
       case "newborn":
         return (
           <ServicePage
-            hero={images.newbornPink}
+            hero={images.newbornJackPortrait}
             tag="Tiny Toes"
             title="Newborn"
             intro="Gentle, natural and baby-led sessions to capture your newborn in their earliest, most delicate days — images you'll treasure for generations."
             packages={newbornPackages}
             gallery={[
-              { src: images.newbornPink, alt: "Baby jungle birthday portrait" },
-              { src: images.babyField, alt: "Laughing baby in safari crown" },
+              {
+                src: images.newbornJackPortrait,
+                alt: "Newborn baby Jack looking to camera",
+              },
+              {
+                src: images.newbornJackHand,
+                alt: "Black and white newborn hand detail",
+              },
               { src: images.familyBaby, alt: "Black and white baby portrait" },
               { src: images.familyRoseColor, alt: "Toddler with a white rose" },
             ]}
@@ -96,7 +103,24 @@ function Site() {
               { src: images.cakeGirl, alt: "Safari cake smash laughter" },
               { src: images.cakeSafariLook, alt: "Wild One birthday portrait" },
               { src: images.cakeBirthday, alt: "Jungle cake smash" },
-              { src: images.newbornPink, alt: "Jungle tub birthday portrait" },
+              { src: images.cakeJungleTub, alt: "Jungle tub birthday portrait" },
+            ]}
+            setPage={setPage}
+          />
+        );
+      case "minis":
+        return (
+          <ServicePage
+            hero={images.familyKiss}
+            tag="Limited release"
+            title="Minis & Milestones"
+            intro="Seasonal mini sessions and milestone portraits — shorter, styled experiences perfect for capturing this chapter of your story."
+            packages={specialPackages}
+            gallery={[
+              { src: images.familyKiss, alt: "Christmas mother and toddler" },
+              { src: images.familyReindeer, alt: "Holiday toddler portrait" },
+              { src: images.familyRoseColor, alt: "Toddler with a white rose" },
+              { src: images.familyCarry, alt: "Christmas family portrait" },
             ]}
             setPage={setPage}
           />

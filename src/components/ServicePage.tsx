@@ -7,6 +7,7 @@ export type Package = {
   name: string;
   price: string;
   duration?: string;
+  featured?: boolean;
   includes: string[];
 };
 
@@ -99,8 +100,8 @@ export function ServicePage({
             <Heading>Choose Your Package</Heading>
           </div>
           <div className={`grid gap-6 ${packageGridClass}`}>
-            {packages.map((pkg, index) => {
-              const featured = index === 1;
+            {packages.map((pkg) => {
+              const featured = Boolean(pkg.featured);
               return (
                 <div
                   key={pkg.name}

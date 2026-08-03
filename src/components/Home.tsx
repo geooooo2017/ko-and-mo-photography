@@ -37,11 +37,11 @@ type GalleryItem = {
 
 const gallery: GalleryItem[] = [
   { id: 1, src: images.coupleHill, alt: "Scottish handfasting ceremony", cat: "Weddings", tall: true },
-  { id: 2, src: images.newbornPink, alt: "First birthday jungle theme", cat: "Newborn", tall: false },
+  { id: 2, src: images.newbornJackPortrait, alt: "Newborn baby Jack looking to camera", cat: "Newborn", tall: false },
   { id: 3, src: images.familyCarry, alt: "Christmas family portrait", cat: "Family", tall: false },
   { id: 4, src: images.cakeGirl, alt: "Safari cake smash laughter", cat: "Cake Smash", tall: true },
   { id: 5, src: images.heroBride, alt: "Bride preparing in the mirror", cat: "Weddings", tall: false },
-  { id: 6, src: images.babyField, alt: "Baby in safari crown", cat: "Newborn", tall: true },
+  { id: 6, src: images.newbornJackHand, alt: "Black and white newborn hand detail", cat: "Newborn", tall: true },
   { id: 7, src: images.familyKiss, alt: "Christmas mother and toddler", cat: "Family", tall: true },
   { id: 8, src: images.weddingRings, alt: "Wedding rings on the certificate", cat: "Weddings", tall: false },
   { id: 9, src: images.cakeKid, alt: "Born to rock cake smash on the drum", cat: "Cake Smash", tall: false },
@@ -89,6 +89,15 @@ const services = [
     page: "cakesmash" as Page,
     items: [{ name: "Let's Celebrate", price: "£150" }],
   },
+  {
+    icon: "✨",
+    title: "Minis & Milestones",
+    page: "minis" as Page,
+    items: [
+      { name: "Milestone Memories", price: "£175–£200" },
+      { name: "Seasonal Mini", price: "£120" },
+    ],
+  },
 ];
 
 const instagramGrid = [
@@ -96,10 +105,10 @@ const instagramGrid = [
   images.coupleHill,
   images.familyCarry,
   images.cakeKid,
-  images.babyField,
+  images.newbornJackPortrait,
   images.familyKiss,
   images.cakeBirthday,
-  images.weddingDoubleExposure,
+  images.newbornJackHand,
   images.familyRoseColor,
 ];
 
@@ -363,7 +372,7 @@ export function Home({ setPage }: { setPage: (page: Page) => void }) {
               in touch to create something bespoke.
             </p>
           </div>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {services.map((service) => (
               <div
                 key={service.title}
@@ -653,7 +662,7 @@ export function Home({ setPage }: { setPage: (page: Page) => void }) {
                   </div>
                 ))}
               </div>
-              <PrimaryButton onClick={() => go("booking")}>
+              <PrimaryButton onClick={() => go("minis")}>
                 Book a Mini Session <ArrowRight size={14} />
               </PrimaryButton>
               <p

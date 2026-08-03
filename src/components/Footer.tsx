@@ -9,6 +9,7 @@ const links: [string, Page][] = [
   ["Newborn", "newborn"],
   ["Family", "family"],
   ["Cake Smash", "cakesmash"],
+  ["Minis & Milestones", "minis"],
   ["Book Now", "booking"],
 ];
 

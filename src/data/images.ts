@@ -17,6 +17,9 @@ import familyReindeer from "../assets/portfolio/family-reindeer.jpg";
 import familyRoseBw from "../assets/portfolio/family-rose-bw.jpg";
 import familyRoseColor from "../assets/portfolio/family-rose-color.jpg";
 
+import newbornJackHand from "../assets/portfolio/newborn-jack-hand.jpg";
+import newbornJackPortrait from "../assets/portfolio/newborn-jack-portrait.jpg";
+
 export const images = {
   // Heroes & feature
   heroBride: weddingBrideMirror,
@@ -32,10 +35,12 @@ export const images = {
   coupleField: weddingBrideMirror,
   weddingDoubleExposure,
 
-  // Newborn / baby (closest available from provided set)
-  newbornPink: cakeJungleTub,
-  babyField: cakeSafariLaugh,
+  // Newborn
+  newbornPink: newbornJackPortrait,
+  babyField: newbornJackHand,
   familyBaby: familyRoseBw,
+  newbornJackPortrait,
+  newbornJackHand,
 
   // Family
   familyCarry: familyChristmas,
@@ -45,6 +50,7 @@ export const images = {
   cakeKid: cakeRockDrumSmash,
   cakeGirl: cakeSafariLaugh,
   cakeBirthday: cakeJungleSmash,
+  cakeJungleTub,
 
   // Extra portfolio assets
   cakeRockSmash: cakeRockSmashFull,
@@ -69,4 +75,5 @@ export type Page =
   | "newborn"
   | "family"
   | "cakesmash"
+  | "minis"
   | "booking";
