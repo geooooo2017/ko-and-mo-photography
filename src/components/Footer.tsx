@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import logo from "../assets/logo.png";
 import { colors, type Page } from "../data/images";
 import { FacebookIcon, InstagramIcon, TikTokIcon } from "./SocialIcons";
@@ -142,16 +141,18 @@ export function Footer({ setPage }: { setPage: (page: Page) => void }) {
           >
             © {new Date().getFullYear()} Ko&Mo Photography. All rights reserved.
           </p>
-          <Link
-            to="/admin"
-            className="text-xs tracking-widest uppercase transition-opacity hover:opacity-70"
+          <a
+            href="/admin"
+            className="text-xs tracking-widest uppercase transition-opacity hover:opacity-80"
             style={{
-              color: "rgba(245,241,234,0.28)",
+              color: "rgba(245,241,234,0.55)",
               fontFamily: "'Montserrat', sans-serif",
+              textDecoration: "underline",
+              textUnderlineOffset: "3px",
             }}
           >
             Staff sign in
-          </Link>
+          </a>
         </div>
       </div>
     </footer>

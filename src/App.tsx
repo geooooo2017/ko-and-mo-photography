@@ -119,9 +119,9 @@ function Site() {
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Site />} />
       <Route path="/admin" element={<Admin />} />
       <Route path="/review/:token" element={<ReviewSubmit />} />
+      <Route path="/" element={<Site />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
