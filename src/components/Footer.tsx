@@ -1,6 +1,7 @@
 import logo from "../assets/logo.png";
 import { colors, type Page } from "../data/images";
-import { FacebookIcon, InstagramIcon } from "./SocialIcons";
+import { FacebookIcon, InstagramIcon, TikTokIcon } from "./SocialIcons";
+import { socialLinks } from "../data/social";
 
 const links: [string, Page][] = [
   ["Home", "home"],
@@ -92,7 +93,9 @@ export function Footer({ setPage }: { setPage: (page: Page) => void }) {
             <p>Barrhead, Glasgow</p>
             <div className="mt-4 flex items-center gap-3">
               <a
-                href="https://instagram.com"
+                href={socialLinks.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="transition-opacity hover:opacity-60"
                 style={{ color: colors.gold }}
                 aria-label="Instagram"
@@ -100,7 +103,17 @@ export function Footer({ setPage }: { setPage: (page: Page) => void }) {
                 <InstagramIcon size={18} />
               </a>
               <a
-                href="https://www.facebook.com/share/1EEE26psVP/?mibextid=wwXIfr"
+                href={socialLinks.tiktok}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition-opacity hover:opacity-60"
+                style={{ color: colors.gold }}
+                aria-label="TikTok"
+              >
+                <TikTokIcon size={18} />
+              </a>
+              <a
+                href={socialLinks.facebook}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="transition-opacity hover:opacity-60"

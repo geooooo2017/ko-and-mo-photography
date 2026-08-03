@@ -1,13 +1,28 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import type { Session, User } from "@supabase/supabase-js";
-import { ArrowLeft, CalendarDays, Inbox, LogOut } from "lucide-react";
+import {
+  ArrowLeft,
+  CalendarDays,
+  Check,
+  Copy,
+  Inbox,
+  LogOut,
+  MessageSquareQuote,
+  Plus,
+  Send,
+} from "lucide-react";
 import { colors } from "../data/images";
 import {
   isSupabaseConfigured,
+  reviewInviteUrl,
+  SESSION_TYPES,
   supabase,
   type AvailabilityStatus,
   type EnquiryRow,
+  type ReviewInviteRow,
+  type ReviewRow,
+  type ReviewStatus,
 } from "../lib/supabase";
 import { SectionLabel } from "./ui";
 
@@ -22,7 +37,9 @@ export function Admin() {
   const [password, setPassword] = useState("");
   const [authError, setAuthError] = useState("");
   const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState<"availability" | "enquiries">("availability");
+  const [tab, setTab] = useState<"availability" | "enquiries" | "reviews">(
+    "availability",
+  );
   const [month, setMonth] = useState(() => {
     const now = new Date();
     return new Date(now.getFullYear(), now.getMonth(), 1);
@@ -31,8 +48,23 @@ export function Admin() {
     Record<string, AvailabilityStatus>
   >({});
   const [enquiries, setEnquiries] = useState<EnquiryRow[]>([]);
+  const [reviews, setReviews] = useState<ReviewRow[]>([]);
+  const [invites, setInvites] = useState<ReviewInviteRow[]>([]);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
+  const [copiedToken, setCopiedToken] = useState("");
+  const [reviewForm, setReviewForm] = useState({
+    name: "",
+    session_type: "Family",
+    quote: "",
+    rating: 5,
+  });
+  const [inviteForm, setInviteForm] = useState({
+    customer_name: "",
+    customer_email: "",
+    session_type: "Family",
+  });
+  const [latestInviteUrl, setLatestInviteUrl] = useState("");
 
   useEffect(() => {
     if (!supabase) {
@@ -85,6 +117,32 @@ export function Admin() {
     setEnquiries((data as EnquiryRow[]) ?? []);
   };
 
+  const loadReviews = async () => {
+    if (!supabase) return;
+    const [reviewsRes, invitesRes] = await Promise.all([
+      supabase
+        .from("reviews")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(100),
+      supabase
+        .from("review_invites")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(100),
+    ]);
+    if (reviewsRes.error) {
+      setMessage(reviewsRes.error.message);
+      return;
+    }
+    if (invitesRes.error) {
+      setMessage(invitesRes.error.message);
+      return;
+    }
+    setReviews((reviewsRes.data as ReviewRow[]) ?? []);
+    setInvites((invitesRes.data as ReviewInviteRow[]) ?? []);
+  };
+
   useEffect(() => {
     if (!session) return;
     void loadAvailability();
@@ -93,6 +151,11 @@ export function Admin() {
   useEffect(() => {
     if (!session || tab !== "enquiries") return;
     void loadEnquiries();
+  }, [session, tab]);
+
+  useEffect(() => {
+    if (!session || tab !== "reviews") return;
+    void loadReviews();
   }, [session, tab]);
 
   const daysInMonth = useMemo(
@@ -166,6 +229,123 @@ export function Admin() {
     }
     setEnquiries((prev) =>
       prev.map((row) => (row.id === id ? { ...row, status } : row)),
+    );
+  };
+
+  const copyInvite = async (token: string) => {
+    const url = reviewInviteUrl(token);
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopiedToken(token);
+      setMessage("");
+      setTimeout(() => setCopiedToken(""), 2000);
+    } catch {
+      setLatestInviteUrl(url);
+      setMessage("Copy failed — link shown below.");
+    }
+  };
+
+  const addReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!supabase) return;
+    setBusy(true);
+    setMessage("");
+    const { error } = await supabase.from("reviews").insert({
+      name: reviewForm.name.trim(),
+      session_type: reviewForm.session_type,
+      quote: reviewForm.quote.trim(),
+      rating: reviewForm.rating,
+      status: "published",
+      source: "manual",
+      published_at: new Date().toISOString(),
+    });
+    setBusy(false);
+    if (error) {
+      setMessage(error.message);
+      return;
+    }
+    setReviewForm({ name: "", session_type: "Family", quote: "", rating: 5 });
+    await loadReviews();
+  };
+
+  const createInvite = async (opts?: {
+    customer_name?: string;
+    customer_email?: string;
+    session_type?: string;
+  }) => {
+    if (!supabase) return;
+    setBusy(true);
+    setMessage("");
+    const payload = {
+      customer_name:
+        (opts?.customer_name ?? inviteForm.customer_name).trim() || null,
+      customer_email:
+        (opts?.customer_email ?? inviteForm.customer_email).trim() || null,
+      session_type: opts?.session_type ?? inviteForm.session_type,
+    };
+    const { data, error } = await supabase
+      .from("review_invites")
+      .insert(payload)
+      .select("*")
+      .single();
+    setBusy(false);
+    if (error) {
+      setMessage(error.message);
+      return;
+    }
+    const invite = data as ReviewInviteRow;
+    setInviteForm({
+      customer_name: "",
+      customer_email: "",
+      session_type: "Family",
+    });
+    setLatestInviteUrl(reviewInviteUrl(invite.token));
+    await copyInvite(invite.token);
+    if (tab !== "reviews") setTab("reviews");
+    await loadReviews();
+  };
+
+  const updateReviewStatus = async (id: string, status: ReviewStatus) => {
+    if (!supabase) return;
+    const patch: Partial<ReviewRow> = { status };
+    if (status === "published") {
+      patch.published_at = new Date().toISOString();
+    }
+    const { error } = await supabase.from("reviews").update(patch).eq("id", id);
+    if (error) {
+      setMessage(error.message);
+      return;
+    }
+    setReviews((prev) =>
+      prev.map((row) => (row.id === id ? { ...row, ...patch } : row)),
+    );
+  };
+
+  const deleteReview = async (id: string) => {
+    if (!supabase) return;
+    if (!window.confirm("Delete this review?")) return;
+    const { error } = await supabase.from("reviews").delete().eq("id", id);
+    if (error) {
+      setMessage(error.message);
+      return;
+    }
+    setReviews((prev) => prev.filter((row) => row.id !== id));
+  };
+
+  const revokeInvite = async (id: string) => {
+    if (!supabase) return;
+    const { error } = await supabase
+      .from("review_invites")
+      .update({ status: "revoked" })
+      .eq("id", id);
+    if (error) {
+      setMessage(error.message);
+      return;
+    }
+    setInvites((prev) =>
+      prev.map((row) =>
+        row.id === id ? { ...row, status: "revoked" as const } : row,
+      ),
     );
   };
 
@@ -311,11 +491,12 @@ export function Admin() {
       </header>
 
       <main className="mx-auto max-w-6xl px-6 py-10">
-        <div className="mb-8 flex gap-3">
+        <div className="mb-8 flex flex-wrap gap-3">
           {(
             [
               ["availability", "Availability", CalendarDays],
               ["enquiries", "Enquiries", Inbox],
+              ["reviews", "Reviews", MessageSquareQuote],
             ] as const
           ).map(([id, label, Icon]) => (
             <button
@@ -486,12 +667,390 @@ export function Admin() {
                       {enquiry.message}
                     </p>
                   )}
-                  <p className="mt-3 text-xs" style={{ color: colors.taupe }}>
-                    {new Date(enquiry.created_at).toLocaleString()}
-                  </p>
+                  <div className="mt-4 flex flex-wrap items-center gap-3">
+                    <p className="text-xs" style={{ color: colors.taupe }}>
+                      {new Date(enquiry.created_at).toLocaleString()}
+                    </p>
+                    <button
+                      type="button"
+                      disabled={busy}
+                      onClick={() =>
+                        void createInvite({
+                          customer_name: enquiry.name,
+                          customer_email: enquiry.email,
+                          session_type: enquiry.event_type || "Family",
+                        })
+                      }
+                      className="inline-flex items-center gap-2 px-3 py-1.5 text-xs tracking-widest uppercase"
+                      style={{
+                        border: `1px solid ${colors.brown}`,
+                        color: colors.brown,
+                      }}
+                    >
+                      <Send size={12} /> Invite review
+                    </button>
+                  </div>
                 </div>
               ))
             )}
+          </div>
+        )}
+
+        {tab === "reviews" && (
+          <div className="space-y-8">
+            <div className="grid gap-6 lg:grid-cols-2">
+              <form
+                onSubmit={addReview}
+                className="space-y-4 p-6"
+                style={{
+                  backgroundColor: "#fff",
+                  border: "1px solid rgba(184,169,154,0.3)",
+                }}
+              >
+                <div className="mb-2 flex items-center gap-2">
+                  <Plus size={16} style={{ color: colors.brown }} />
+                  <h2
+                    className="text-sm tracking-widest uppercase"
+                    style={{ color: colors.brown }}
+                  >
+                    Add a review
+                  </h2>
+                </div>
+                <p className="text-sm" style={{ color: colors.taupe }}>
+                  Publish a review yourself (from Google, Facebook, messages, etc.).
+                </p>
+                <input
+                  required
+                  placeholder="Client name"
+                  value={reviewForm.name}
+                  onChange={(e) =>
+                    setReviewForm((f) => ({ ...f, name: e.target.value }))
+                  }
+                  className="w-full px-4 py-3 text-sm outline-none"
+                  style={{
+                    border: "1px solid rgba(184,169,154,0.35)",
+                    backgroundColor: colors.cream,
+                    color: colors.brown,
+                  }}
+                />
+                <select
+                  value={reviewForm.session_type}
+                  onChange={(e) =>
+                    setReviewForm((f) => ({
+                      ...f,
+                      session_type: e.target.value,
+                    }))
+                  }
+                  className="w-full px-4 py-3 text-sm outline-none"
+                  style={{
+                    border: "1px solid rgba(184,169,154,0.35)",
+                    backgroundColor: colors.cream,
+                    color: colors.brown,
+                  }}
+                >
+                  {SESSION_TYPES.map((type) => (
+                    <option key={type} value={type}>
+                      {type}
+                    </option>
+                  ))}
+                </select>
+                <select
+                  value={reviewForm.rating}
+                  onChange={(e) =>
+                    setReviewForm((f) => ({
+                      ...f,
+                      rating: Number(e.target.value),
+                    }))
+                  }
+                  className="w-full px-4 py-3 text-sm outline-none"
+                  style={{
+                    border: "1px solid rgba(184,169,154,0.35)",
+                    backgroundColor: colors.cream,
+                    color: colors.brown,
+                  }}
+                >
+                  {[5, 4, 3, 2, 1].map((n) => (
+                    <option key={n} value={n}>
+                      {n} star{n === 1 ? "" : "s"}
+                    </option>
+                  ))}
+                </select>
+                <textarea
+                  required
+                  rows={4}
+                  minLength={10}
+                  placeholder="Review text"
+                  value={reviewForm.quote}
+                  onChange={(e) =>
+                    setReviewForm((f) => ({ ...f, quote: e.target.value }))
+                  }
+                  className="w-full resize-y px-4 py-3 text-sm outline-none"
+                  style={{
+                    border: "1px solid rgba(184,169,154,0.35)",
+                    backgroundColor: colors.cream,
+                    color: colors.brown,
+                  }}
+                />
+                <button
+                  type="submit"
+                  disabled={busy}
+                  className="w-full py-3 text-xs tracking-[0.18em] uppercase text-white"
+                  style={{ backgroundColor: colors.green }}
+                >
+                  Publish review
+                </button>
+              </form>
+
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  void createInvite();
+                }}
+                className="space-y-4 p-6"
+                style={{
+                  backgroundColor: "#fff",
+                  border: "1px solid rgba(184,169,154,0.3)",
+                }}
+              >
+                <div className="mb-2 flex items-center gap-2">
+                  <Send size={16} style={{ color: colors.brown }} />
+                  <h2
+                    className="text-sm tracking-widest uppercase"
+                    style={{ color: colors.brown }}
+                  >
+                    Invite a customer
+                  </h2>
+                </div>
+                <p className="text-sm" style={{ color: colors.taupe }}>
+                  Creates a private link you can send by WhatsApp, text, or email.
+                </p>
+                <input
+                  placeholder="Customer name (optional)"
+                  value={inviteForm.customer_name}
+                  onChange={(e) =>
+                    setInviteForm((f) => ({
+                      ...f,
+                      customer_name: e.target.value,
+                    }))
+                  }
+                  className="w-full px-4 py-3 text-sm outline-none"
+                  style={{
+                    border: "1px solid rgba(184,169,154,0.35)",
+                    backgroundColor: colors.cream,
+                    color: colors.brown,
+                  }}
+                />
+                <input
+                  type="email"
+                  placeholder="Customer email (optional)"
+                  value={inviteForm.customer_email}
+                  onChange={(e) =>
+                    setInviteForm((f) => ({
+                      ...f,
+                      customer_email: e.target.value,
+                    }))
+                  }
+                  className="w-full px-4 py-3 text-sm outline-none"
+                  style={{
+                    border: "1px solid rgba(184,169,154,0.35)",
+                    backgroundColor: colors.cream,
+                    color: colors.brown,
+                  }}
+                />
+                <select
+                  value={inviteForm.session_type}
+                  onChange={(e) =>
+                    setInviteForm((f) => ({
+                      ...f,
+                      session_type: e.target.value,
+                    }))
+                  }
+                  className="w-full px-4 py-3 text-sm outline-none"
+                  style={{
+                    border: "1px solid rgba(184,169,154,0.35)",
+                    backgroundColor: colors.cream,
+                    color: colors.brown,
+                  }}
+                >
+                  {SESSION_TYPES.map((type) => (
+                    <option key={type} value={type}>
+                      {type}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  type="submit"
+                  disabled={busy}
+                  className="w-full py-3 text-xs tracking-[0.18em] uppercase text-white"
+                  style={{ backgroundColor: colors.green }}
+                >
+                  Create invite link
+                </button>
+                {latestInviteUrl && (
+                  <div
+                    className="break-all p-3 text-xs"
+                    style={{
+                      backgroundColor: colors.cream,
+                      color: colors.brown,
+                      border: "1px solid rgba(184,169,154,0.35)",
+                    }}
+                  >
+                    <p className="mb-1 tracking-widest uppercase" style={{ color: colors.taupe }}>
+                      Latest link
+                    </p>
+                    {latestInviteUrl}
+                  </div>
+                )}
+              </form>
+            </div>
+
+            <div>
+              <h2
+                className="mb-4 text-sm tracking-widest uppercase"
+                style={{ color: colors.brown }}
+              >
+                Reviews
+              </h2>
+              {reviews.length === 0 ? (
+                <p style={{ color: colors.taupe }}>No reviews yet.</p>
+              ) : (
+                <div className="space-y-3">
+                  {reviews.map((review) => (
+                    <div
+                      key={review.id}
+                      className="p-5"
+                      style={{
+                        backgroundColor: "#fff",
+                        border: "1px solid rgba(184,169,154,0.3)",
+                      }}
+                    >
+                      <div className="mb-2 flex flex-wrap items-start justify-between gap-3">
+                        <div>
+                          <h3
+                            style={{
+                              fontFamily: "'Cormorant Garamond', serif",
+                              fontSize: "1.35rem",
+                              color: colors.brown,
+                            }}
+                          >
+                            {review.name}
+                          </h3>
+                          <p className="text-sm" style={{ color: colors.taupe }}>
+                            {review.session_type} · {review.rating}/5 · {review.source}
+                          </p>
+                        </div>
+                        <select
+                          value={review.status}
+                          onChange={(e) =>
+                            void updateReviewStatus(
+                              review.id,
+                              e.target.value as ReviewStatus,
+                            )
+                          }
+                          className="px-3 py-2 text-xs uppercase tracking-widest"
+                          style={{
+                            border: "1px solid rgba(184,169,154,0.4)",
+                            color: colors.brown,
+                            backgroundColor: colors.cream,
+                          }}
+                        >
+                          <option value="pending">Pending</option>
+                          <option value="published">Published</option>
+                          <option value="hidden">Hidden</option>
+                        </select>
+                      </div>
+                      <p className="text-sm italic" style={{ color: colors.brown }}>
+                        “{review.quote}”
+                      </p>
+                      <div className="mt-3 flex items-center justify-between gap-3">
+                        <p className="text-xs" style={{ color: colors.taupe }}>
+                          {new Date(review.created_at).toLocaleString()}
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => void deleteReview(review.id)}
+                          className="text-xs tracking-widest uppercase"
+                          style={{ color: "#8B3A3A" }}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div>
+              <h2
+                className="mb-4 text-sm tracking-widest uppercase"
+                style={{ color: colors.brown }}
+              >
+                Invite links
+              </h2>
+              {invites.length === 0 ? (
+                <p style={{ color: colors.taupe }}>No invites yet.</p>
+              ) : (
+                <div className="space-y-3">
+                  {invites.map((invite) => (
+                    <div
+                      key={invite.id}
+                      className="flex flex-wrap items-center justify-between gap-3 p-4"
+                      style={{
+                        backgroundColor: "#fff",
+                        border: "1px solid rgba(184,169,154,0.3)",
+                      }}
+                    >
+                      <div>
+                        <p style={{ color: colors.brown }}>
+                          {invite.customer_name || "Customer"}
+                          {invite.session_type ? ` · ${invite.session_type}` : ""}
+                        </p>
+                        <p className="text-xs" style={{ color: colors.taupe }}>
+                          {invite.status}
+                          {invite.customer_email ? ` · ${invite.customer_email}` : ""}
+                          {" · "}
+                          {new Date(invite.created_at).toLocaleString()}
+                        </p>
+                      </div>
+                      <div className="flex gap-2">
+                        {invite.status === "pending" && (
+                          <>
+                            <button
+                              type="button"
+                              onClick={() => void copyInvite(invite.token)}
+                              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs tracking-widest uppercase"
+                              style={{
+                                border: `1px solid ${colors.brown}`,
+                                color: colors.brown,
+                              }}
+                            >
+                              {copiedToken === invite.token ? (
+                                <>
+                                  <Check size={12} /> Copied
+                                </>
+                              ) : (
+                                <>
+                                  <Copy size={12} /> Copy link
+                                </>
+                              )}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => void revokeInvite(invite.id)}
+                              className="px-3 py-2 text-xs tracking-widest uppercase"
+                              style={{ color: "#8B3A3A" }}
+                            >
+                              Revoke
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         )}
       </main>

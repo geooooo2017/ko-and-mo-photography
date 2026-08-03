@@ -15,7 +15,15 @@ import {
   SectionLabel,
   Stars,
 } from "./ui";
-import { FacebookIcon, InstagramIcon } from "./SocialIcons";
+import { FacebookIcon, InstagramIcon, TikTokIcon } from "./SocialIcons";
+import {
+  journeySteps,
+  miniPerfectFor,
+  miniSessionIncludes,
+} from "../data/packages";
+import augustFlyer from "../assets/august-mini-sessions.png";
+import { isSupabaseConfigured, supabase } from "../lib/supabase";
+import { socialLinks } from "../data/social";
 
 type GalleryItem = {
   id: number;
@@ -44,32 +52,43 @@ const gallery: GalleryItem[] = [
   { id: 16, src: images.familyBaby, alt: "Black and white rose portrait", cat: "Newborn", tall: false },
 ];
 
-const testimonials = [
+const fallbackTestimonials = [
   {
     quote:
       "Absolutely amazing photographs and such a lovely experience from start to finish. We treasure every single image.",
     name: "Sarah & Mark",
     type: "Wedding",
+    rating: 5,
   },
   {
     quote:
       "Ko&Mo captured our newborn so gently and beautifully. The photos are beyond anything we imagined — pure magic.",
     name: "Emma & James",
     type: "Newborn",
+    rating: 5,
   },
   {
     quote:
       "Our family session was so relaxed and fun. The photos look like they belong in a magazine. Highly recommend!",
     name: "The McGregor Family",
     type: "Family",
+    rating: 5,
   },
   {
     quote:
       "The cake smash photos made us cry with laughter. Every single one is a keeper. Thank you so much!",
     name: "Fiona & Callum",
     type: "Cake Smash",
+    rating: 5,
   },
 ];
+
+type Testimonial = {
+  quote: string;
+  name: string;
+  type: string;
+  rating: number;
+};
 
 const services = [
   {
@@ -82,25 +101,22 @@ const services = [
     ],
   },
   {
-    icon: "✨",
-    title: "Mini Photoshoot",
-    page: "booking" as Page,
-    items: [
-      { name: "30 minutes", price: "£30" },
-      { name: "Edited images", price: "10–15" },
-    ],
+    icon: "👶",
+    title: "Tiny Toes",
+    page: "newborn" as Page,
+    items: [{ name: "Newborn Session", price: "£150–£200" }],
   },
   {
     icon: "👨‍👩‍👧‍👦",
     title: "Family",
     page: "family" as Page,
-    items: [{ name: "Mini Photoshoot", price: "£30" }],
+    items: [{ name: "Family Session", price: "£175–£200" }],
   },
   {
     icon: "🎂",
     title: "Cake Smash",
     page: "cakesmash" as Page,
-    items: [{ name: "Mini Photoshoot", price: "£30" }],
+    items: [{ name: "Let's Celebrate", price: "£150" }],
   },
 ];
 
@@ -161,6 +177,34 @@ export function Home({ setPage }: { setPage: (page: Page) => void }) {
   }, [updateSlider]);
 
   const [testimonialIndex, setTestimonialIndex] = useState(0);
+  const [testimonials, setTestimonials] =
+    useState<Testimonial[]>(fallbackTestimonials);
+
+  useEffect(() => {
+    if (!supabase || !isSupabaseConfigured) return;
+    let cancelled = false;
+    (async () => {
+      const { data, error } = await supabase
+        .from("reviews")
+        .select("name,session_type,quote,rating")
+        .eq("status", "published")
+        .order("published_at", { ascending: false })
+        .limit(20);
+      if (cancelled || error || !data?.length) return;
+      setTestimonials(
+        data.map((row) => ({
+          name: row.name,
+          type: row.session_type,
+          quote: row.quote,
+          rating: row.rating ?? 5,
+        })),
+      );
+      setTestimonialIndex(0);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <div>
@@ -268,17 +312,19 @@ export function Home({ setPage }: { setPage: (page: Page) => void }) {
               }}
             >
               <p>
-                I specialise in creating timeless photographs for weddings,
-                newborns, and families throughout Scotland. With a gentle,
-                unobtrusive approach, I believe the best photographs happen when
-                you forget the camera is even there.
+                Ko&Mo Photography began with a simple belief — that the most
+                meaningful images aren't just seen, they're felt. I specialise in
+                weddings, newborns and families throughout Scotland.
               </p>
               <p>
-                My goal is to capture genuine emotions and beautiful memories
-                you'll treasure forever — the quiet glances, the happy tears,
-                the tiny fingers, and the big laughs.
+                I believe the best photographs come from real connections,
+                genuine moments and feeling completely at ease. My goal is to
+                create timeless, heartfelt images you'll treasure for generations.
               </p>
-              <p>Every family has a unique story worth telling beautifully.</p>
+              <p>
+                More than photos — we create heirlooms. Every family has a unique
+                story worth telling beautifully.
+              </p>
             </div>
             <div
               className="mb-10 flex flex-wrap gap-10 pt-8"
@@ -286,9 +332,9 @@ export function Home({ setPage }: { setPage: (page: Page) => void }) {
             >
               {(
                 [
-                  ["8+", "Years Experience"],
-                  ["500+", "Happy Families"],
-                  ["12k+", "Images Delivered"],
+                  ["Scotland", "Based & Shooting"],
+                  ["Personal", "Every Session"],
+                  ["Heirloom", "Images You'll Keep"],
                 ] as const
               ).map(([stat, label]) => (
                 <div key={label}>
@@ -405,6 +451,219 @@ export function Home({ setPage }: { setPage: (page: Page) => void }) {
                 >
                   View Details <ArrowRight size={12} />
                 </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section
+        className="py-20 md:py-24"
+        style={{ backgroundColor: colors.cream }}
+      >
+        <div className="mx-auto max-w-6xl px-6 md:px-12">
+          <div className="mb-12 text-center">
+            <SectionLabel>The process</SectionLabel>
+            <Heading>Your Journey With Me</Heading>
+            <p
+              className="mx-auto max-w-xl text-sm leading-relaxed"
+              style={{
+                color: colors.taupe,
+                fontFamily: "'Montserrat', sans-serif",
+                fontWeight: 300,
+              }}
+            >
+              From first enquiry to images on your wall — here's how we work
+              together.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {journeySteps.map((step, i) => (
+              <div key={step.title}>
+                <p
+                  className="mb-2 text-xs tracking-[0.2em] uppercase"
+                  style={{
+                    color: colors.green,
+                    fontFamily: "'Montserrat', sans-serif",
+                  }}
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </p>
+                <h3
+                  className="mb-2"
+                  style={{
+                    fontFamily: "'Cormorant Garamond', serif",
+                    fontSize: "1.35rem",
+                    color: colors.brown,
+                    fontWeight: 400,
+                  }}
+                >
+                  {step.title}
+                </h3>
+                <p
+                  className="text-sm leading-relaxed"
+                  style={{
+                    color: colors.taupe,
+                    fontFamily: "'Montserrat', sans-serif",
+                    fontWeight: 300,
+                  }}
+                >
+                  {step.text}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-24 md:py-32" style={{ backgroundColor: colors.cream }}>
+        <div className="mx-auto max-w-6xl px-6 md:px-12">
+          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
+            <div>
+              <SectionLabel>Limited release</SectionLabel>
+              <Heading>August Mini Sessions</Heading>
+              <p
+                className="mb-2 text-sm tracking-[0.15em] uppercase"
+                style={{
+                  color: colors.green,
+                  fontFamily: "'Montserrat', sans-serif",
+                }}
+              >
+                Short, sweet & so memorable
+              </p>
+              <p
+                className="mb-8 leading-relaxed"
+                style={{
+                  color: colors.taupe,
+                  fontFamily: "'Montserrat', sans-serif",
+                  fontWeight: 300,
+                  lineHeight: 1.8,
+                }}
+              >
+                The most magical moments of the year deserve to be remembered
+                forever. Perfect for updating your family photos, celebrating
+                your little ones or simply capturing this beautiful season.
+              </p>
+              <div className="mb-8 flex flex-wrap gap-8">
+                <div>
+                  <p
+                    style={{
+                      fontFamily: "'Cormorant Garamond', serif",
+                      fontSize: "2.4rem",
+                      color: colors.brown,
+                    }}
+                  >
+                    £120
+                  </p>
+                  <p
+                    className="text-xs tracking-widest uppercase"
+                    style={{ color: colors.taupe }}
+                  >
+                    Mini session
+                  </p>
+                </div>
+                <div>
+                  <p
+                    style={{
+                      fontFamily: "'Cormorant Garamond', serif",
+                      fontSize: "2.4rem",
+                      color: colors.brown,
+                    }}
+                  >
+                    20–30
+                  </p>
+                  <p
+                    className="text-xs tracking-widest uppercase"
+                    style={{ color: colors.taupe }}
+                  >
+                    Minutes
+                  </p>
+                </div>
+                <div>
+                  <p
+                    style={{
+                      fontFamily: "'Cormorant Garamond', serif",
+                      fontSize: "2.4rem",
+                      color: colors.brown,
+                    }}
+                  >
+                    10
+                  </p>
+                  <p
+                    className="text-xs tracking-widest uppercase"
+                    style={{ color: colors.taupe }}
+                  >
+                    Edited images
+                  </p>
+                </div>
+              </div>
+              <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                {miniPerfectFor.map((item) => (
+                  <div
+                    key={item}
+                    className="px-3 py-2 text-center text-xs tracking-widest uppercase"
+                    style={{
+                      border: "1px solid rgba(184,169,154,0.35)",
+                      color: colors.brown,
+                      fontFamily: "'Montserrat', sans-serif",
+                      backgroundColor: "#fff",
+                    }}
+                  >
+                    {item}
+                  </div>
+                ))}
+              </div>
+              <PrimaryButton onClick={() => go("booking")}>
+                Book a Mini Session <ArrowRight size={14} />
+              </PrimaryButton>
+              <p
+                className="mt-4 text-xs"
+                style={{
+                  color: colors.taupe,
+                  fontFamily: "'Montserrat', sans-serif",
+                }}
+              >
+                Limited numbers — first-come, first-served once dates are
+                announced.
+              </p>
+            </div>
+            <div>
+              <img
+                src={augustFlyer}
+                alt="August Mini Sessions pricing flyer"
+                className="w-full shadow-lg"
+              />
+            </div>
+          </div>
+          <div className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {miniSessionIncludes.map((item) => (
+              <div
+                key={item.title}
+                className="p-6"
+                style={{
+                  backgroundColor: "#fff",
+                  border: "1px solid rgba(184,169,154,0.25)",
+                }}
+              >
+                <h3
+                  className="mb-2 text-xs tracking-widest uppercase"
+                  style={{
+                    color: colors.brown,
+                    fontFamily: "'Montserrat', sans-serif",
+                  }}
+                >
+                  {item.title}
+                </h3>
+                <p
+                  className="text-sm leading-relaxed"
+                  style={{
+                    color: colors.taupe,
+                    fontFamily: "'Montserrat', sans-serif",
+                    fontWeight: 300,
+                  }}
+                >
+                  {item.text}
+                </p>
               </div>
             ))}
           </div>
@@ -559,7 +818,7 @@ export function Home({ setPage }: { setPage: (page: Page) => void }) {
               >
                 {testimonials.map((t, i) => (
                   <div key={i} className="w-full flex-shrink-0 px-4">
-                    <Stars />
+                    <Stars n={t.rating ?? 5} />
                     <blockquote
                       className="mb-8 leading-relaxed"
                       style={{
@@ -750,11 +1009,13 @@ export function Home({ setPage }: { setPage: (page: Page) => void }) {
           <div className="mb-10 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
             <div>
               <SectionLabel>Follow Along</SectionLabel>
-              <Heading>@koandmo.photography</Heading>
+              <Heading>{socialLinks.handle}</Heading>
             </div>
             <div className="mb-2 flex items-center gap-4">
               <a
-                href="https://instagram.com"
+                href={socialLinks.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="flex items-center gap-2 text-xs tracking-widest uppercase transition-opacity hover:opacity-60"
                 style={{
                   color: colors.brown,
@@ -764,7 +1025,19 @@ export function Home({ setPage }: { setPage: (page: Page) => void }) {
                 <InstagramIcon size={14} /> Instagram
               </a>
               <a
-                href="https://www.facebook.com/share/1EEE26psVP/?mibextid=wwXIfr"
+                href={socialLinks.tiktok}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-xs tracking-widest uppercase transition-opacity hover:opacity-60"
+                style={{
+                  color: colors.brown,
+                  fontFamily: "'Montserrat', sans-serif",
+                }}
+              >
+                <TikTokIcon size={14} /> TikTok
+              </a>
+              <a
+                href={socialLinks.facebook}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-xs tracking-widest uppercase transition-opacity hover:opacity-60"

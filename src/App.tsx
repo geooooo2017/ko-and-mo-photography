@@ -6,115 +6,14 @@ import { Home } from "./components/Home";
 import { ServicePage } from "./components/ServicePage";
 import { Booking } from "./components/Booking";
 import { Admin } from "./components/Admin";
+import { ReviewSubmit } from "./components/ReviewSubmit";
 import { images, type Page } from "./data/images";
-
-const weddingPackages = [
-  {
-    icon: "💍",
-    name: "Half Day",
-    price: "£400",
-    duration: "£80 deposit",
-    includes: [
-      "Consultation 3 weeks before",
-      "Ceremony coverage",
-      "Family/couple formal photos",
-      "Speeches",
-      "Cake cutting",
-      "1st–3rd dance",
-      "Minimum of 350 edited digital images on a USB",
-      "Print licence",
-    ],
-  },
-  {
-    icon: "💍",
-    name: "Full Day",
-    price: "£550",
-    duration: "£110 deposit",
-    includes: [
-      "Consultation 3 weeks before",
-      "Bridal preparation",
-      "Ceremony coverage",
-      "Family/couple formal photos",
-      "Speeches",
-      "Cake cutting",
-      "1st–3rd dance",
-      "Minimum of 350 edited digital images on a USB",
-      "Print licence",
-    ],
-  },
-];
-
-const miniPhotoshootPackage = {
-  icon: "✨",
-  name: "Mini Photoshoot",
-  price: "£30",
-  duration: "30 minutes",
-  includes: [
-    "10–15 edited digital photos",
-    "Any type of photoshoot",
-    "Newborn, family & children",
-    "Maternity & engagement",
-    "Pets, brands & company",
-  ],
-};
-
-const newbornPackages = [
-  miniPhotoshootPackage,
-  {
-    icon: "👶",
-    name: "Newborn Session",
-    price: "From £30",
-    duration: "Mini or bespoke",
-    includes: [
-      "Mini photoshoot option available",
-      "Soft, unhurried approach",
-      "In-home or studio setups",
-      "Parent & sibling shots available",
-      "Edited digital images",
-    ],
-  },
-];
-
-const familyPackages = [
-  {
-    ...miniPhotoshootPackage,
-    icon: "👨‍👩‍👧‍👦",
-  },
-  {
-    icon: "👨‍👩‍👧‍👦",
-    name: "Full Session",
-    price: "Bespoke quote",
-    duration: "60–90 minutes",
-    includes: [
-      "Outdoor or indoor location",
-      "Multiple outfit changes",
-      "Extended edited gallery",
-      "Print licence available",
-      "Sibling & individual shots",
-    ],
-  },
-];
-
-const cakeSmashPackages = [
-  {
-    ...miniPhotoshootPackage,
-    icon: "🎂",
-    name: "Mini Photoshoot",
-  },
-  {
-    icon: "🎂",
-    name: "Cake Smash",
-    price: "Bespoke quote",
-    duration: "Themed session",
-    includes: [
-      "Studio setup & themed backdrop",
-      "Cake smash coverage",
-      "Pre-smash portrait shots",
-      "Edited digital images",
-      "Print licence available",
-    ],
-  },
-];
+import {
+  cakeSmashPackages,
+  familyPackages,
+  newbornPackages,
+  weddingPackages,
+} from "./data/packages";
 
 function Site() {
   const [page, setPage] = useState<Page>("home");
@@ -129,7 +28,7 @@ function Site() {
             hero={images.coupleHill}
             tag="Wedding Photography"
             title="Weddings"
-            intro="Your wedding day is one of the most precious chapters of your story. I document it with sensitivity, artistry, and a gentle eye — capturing the moments you'll return to for the rest of your lives."
+            intro="Your wedding day passes in a heartbeat, but your photographs will tell your story for generations. Natural, unobtrusive storytelling focused on genuine emotion."
             packages={weddingPackages}
             gallery={[
               { src: images.coupleHill, alt: "Scottish handfasting ceremony" },
@@ -146,9 +45,9 @@ function Site() {
         return (
           <ServicePage
             hero={images.newbornPink}
-            tag="Newborn Photography"
+            tag="Tiny Toes"
             title="Newborn"
-            intro="Those first tiny days pass in a heartbeat. I come to you — your home, your space — and document your new arrival with softness, patience, and complete care, creating heirlooms you'll treasure for generations."
+            intro="Gentle, natural and baby-led sessions to capture your newborn in their earliest, most delicate days — images you'll treasure for generations."
             packages={newbornPackages}
             gallery={[
               { src: images.newbornPink, alt: "Baby jungle birthday portrait" },
@@ -165,7 +64,7 @@ function Site() {
             hero={images.familyCarry}
             tag="Family Photography"
             title="Family"
-            intro="Family sessions are all about connection — the laughter, the chaos, the love. I create a relaxed, fun atmosphere so your family can just be yourselves, resulting in authentic photographs that truly capture who you are."
+            intro="Natural, relaxed sessions that capture connection, love and your unique family story. Perfect for creating timeless memories together."
             packages={familyPackages}
             gallery={[
               { src: images.familyCarry, alt: "Christmas family portrait" },
@@ -185,9 +84,9 @@ function Site() {
         return (
           <ServicePage
             hero={images.cakeKid}
-            tag="Cake Smash Photography"
+            tag="Let's Celebrate"
             title="Cake Smash"
-            intro="Celebrate your little one's first birthday in the most delightful way. Cake Smash sessions are pure joy from start to finish — and the photos are absolutely priceless."
+            intro="A fun-filled session to celebrate your little one's milestone in the sweetest way — giggles, frosting and memories you'll treasure forever. Sessions ideally take place just before or after a first birthday."
             packages={cakeSmashPackages}
             gallery={[
               { src: images.cakeKid, alt: "Rock and roll cake smash" },
@@ -227,6 +126,7 @@ function App() {
     <Routes>
       <Route path="/" element={<Site />} />
       <Route path="/admin" element={<Admin />} />
+      <Route path="/review/:token" element={<ReviewSubmit />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

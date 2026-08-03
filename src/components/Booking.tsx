@@ -28,19 +28,19 @@ type FormState = {
 const basePrices: Record<string, number> = {
   "Wedding Full Day": 550,
   "Wedding Half Day": 400,
-  "Mini Photoshoot": 30,
-  Newborn: 30,
-  Family: 30,
-  "Cake Smash": 30,
+  "Mini Session": 120,
+  Newborn: 175,
+  Family: 185,
+  "Cake Smash": 150,
 };
 
 const deposits: Record<string, number> = {
   "Wedding Full Day": 110,
   "Wedding Half Day": 80,
-  "Mini Photoshoot": 0,
-  Newborn: 0,
-  Family: 0,
-  "Cake Smash": 0,
+  "Mini Session": 50,
+  Newborn: 50,
+  Family: 50,
+  "Cake Smash": 50,
 };
 
 const extraPrices = {
@@ -60,7 +60,7 @@ const extraLabels: Record<keyof Extras, string> = {
 const sessionTypes = [
   "Wedding Full Day",
   "Wedding Half Day",
-  "Mini Photoshoot",
+  "Mini Session",
   "Newborn",
   "Family",
   "Cake Smash",
@@ -412,9 +412,21 @@ export function Booking() {
                     }}
                   >
                     £{basePrices[sessionType]}
-                    {deposit > 0 ? ` (£${deposit} deposit)` : ""}
+                    {deposit > 0
+                      ? ` (£${deposit} booking fee)`
+                      : ""}
                   </span>
                 </div>
+                <p
+                  className="mb-4 text-xs"
+                  style={{
+                    color: colors.taupe,
+                    fontFamily: "'Montserrat', sans-serif",
+                  }}
+                >
+                  Portrait sessions: £50 booking fee; balance due 48 hours before.
+                  Wedding balances due 3 weeks before the day.
+                </p>
                 <p
                   className="mb-4 text-xs tracking-widest uppercase"
                   style={{
@@ -674,14 +686,14 @@ export function Booking() {
                   >
                     <option>Wedding Full Day</option>
                     <option>Wedding Half Day</option>
-                    <option>Mini Photoshoot</option>
+                    <option>Mini Session</option>
                     <option>Newborn</option>
                     <option>Family</option>
                     <option>Cake Smash</option>
                     <option>Maternity</option>
-                    <option>Engagement</option>
                     <option>Pets</option>
-                    <option>Brands / Company</option>
+                    <option>Couples</option>
+                    <option>Children</option>
                   </select>
                 </div>
 

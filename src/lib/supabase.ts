@@ -42,3 +42,49 @@ export type EnquiryInsert = {
   message?: string;
   estimated_total?: number;
 };
+
+export type ReviewStatus = "pending" | "published" | "hidden";
+export type ReviewSource = "manual" | "invite";
+export type InviteStatus = "pending" | "used" | "revoked";
+
+export type ReviewRow = {
+  id: string;
+  name: string;
+  session_type: string;
+  quote: string;
+  rating: number;
+  status: ReviewStatus;
+  source: ReviewSource;
+  invite_id: string | null;
+  created_at: string;
+  published_at: string | null;
+};
+
+export type ReviewInviteRow = {
+  id: string;
+  token: string;
+  customer_name: string | null;
+  customer_email: string | null;
+  session_type: string | null;
+  note: string | null;
+  status: InviteStatus;
+  created_at: string;
+  used_at: string | null;
+  expires_at: string | null;
+};
+
+export const SESSION_TYPES = [
+  "Wedding",
+  "Newborn",
+  "Family",
+  "Cake Smash",
+  "Mini Session",
+  "Other",
+] as const;
+
+export function reviewInviteUrl(token: string) {
+  if (typeof window !== "undefined") {
+    return `${window.location.origin}/review/${token}`;
+  }
+  return `/review/${token}`;
+}
