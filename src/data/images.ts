@@ -1,4 +1,5 @@
 import weddingBrideMirror from "../assets/portfolio/wedding-bride-mirror.jpg";
+import weddingDoubleExposure from "../assets/portfolio/wedding-double-exposure.jpg";
 import weddingHandfasting from "../assets/portfolio/wedding-handfasting.jpg";
 import weddingRings from "../assets/portfolio/wedding-rings.jpg";
 
@@ -12,7 +13,6 @@ import cakeSafariLook from "../assets/portfolio/cake-safari-look.jpg";
 
 import familyChristmas from "../assets/portfolio/family-christmas.jpg";
 import familyChristmasDuo from "../assets/portfolio/family-christmas-duo.jpg";
-import familyDoubleExposure from "../assets/portfolio/family-double-exposure.jpg";
 import familyReindeer from "../assets/portfolio/family-reindeer.jpg";
 import familyRoseBw from "../assets/portfolio/family-rose-bw.jpg";
 import familyRoseColor from "../assets/portfolio/family-rose-color.jpg";
@@ -30,6 +30,7 @@ export const images = {
   coupleLake: weddingBrideMirror,
   coupleTreePath: weddingRings,
   coupleField: weddingBrideMirror,
+  weddingDoubleExposure,
 
   // Newborn / baby (closest available from provided set)
   newbornPink: cakeJungleTub,
@@ -49,7 +50,6 @@ export const images = {
   cakeRockSmash: cakeRockSmashFull,
   cakeRockBw,
   cakeSafariLook,
-  familyDoubleExposure,
   familyReindeer,
   familyRoseColor,
   weddingRings,

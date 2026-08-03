@@ -48,7 +48,7 @@ const gallery: GalleryItem[] = [
   { id: 11, src: images.cakeRockSmash, alt: "Born to rock birthday session", cat: "Cake Smash", tall: false },
   { id: 12, src: images.cakeBirthday, alt: "Jungle cake smash", cat: "Cake Smash", tall: false },
   { id: 13, src: images.familyReindeer, alt: "Holiday toddler portrait", cat: "Family", tall: true },
-  { id: 14, src: images.familyDoubleExposure, alt: "Creative mother and child double exposure", cat: "Family", tall: false },
+  { id: 14, src: images.weddingDoubleExposure, alt: "Artistic bridal double exposure portrait", cat: "Weddings", tall: false },
   { id: 15, src: images.cakeSafariLook, alt: "Wild One birthday portrait", cat: "Cake Smash", tall: false },
   { id: 16, src: images.familyBaby, alt: "Black and white rose portrait", cat: "Newborn", tall: false },
 ];
@@ -98,7 +98,7 @@ const instagramGrid = [
   images.babyField,
   images.familyKiss,
   images.cakeBirthday,
-  images.familyDoubleExposure,
+  images.weddingDoubleExposure,
   images.familyRoseColor,
 ];
 
