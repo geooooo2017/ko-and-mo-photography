@@ -48,4 +48,7 @@ button {
 img {
   max-width: 100%;
   display: block;
+  image-rendering: auto;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }

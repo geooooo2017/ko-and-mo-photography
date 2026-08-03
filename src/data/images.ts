@@ -1,22 +1,21 @@
-import weddingBrideMirror from "../assets/portfolio/wedding-bride-mirror.png";
-import weddingHandfasting from "../assets/portfolio/wedding-handfasting.png";
-import weddingRings from "../assets/portfolio/wedding-rings.png";
+import weddingBrideMirror from "../assets/portfolio/wedding-bride-mirror.jpg";
+import weddingHandfasting from "../assets/portfolio/wedding-handfasting.jpg";
+import weddingRings from "../assets/portfolio/wedding-rings.jpg";
 
-import cakeJungleSmash from "../assets/portfolio/cake-jungle-smash.png";
-import cakeJungleTub from "../assets/portfolio/cake-jungle-tub.png";
-import cakeRockBw from "../assets/portfolio/cake-rock-bw.png";
-import cakeRockSmashFull from "../assets/portfolio/cake-rock-smash-full.png";
-import cakeRockTub from "../assets/portfolio/cake-rock-tub.png";
-import cakeSafariLaugh from "../assets/portfolio/cake-safari-laugh.png";
-import cakeSafariLook from "../assets/portfolio/cake-safari-look.png";
+import cakeJungleSmash from "../assets/portfolio/cake-jungle-smash.jpg";
+import cakeJungleTub from "../assets/portfolio/cake-jungle-tub.jpg";
+import cakeRockBw from "../assets/portfolio/cake-rock-bw.jpg";
+import cakeRockSmashFull from "../assets/portfolio/cake-rock-smash-full.jpg";
+import cakeRockTub from "../assets/portfolio/cake-rock-tub.jpg";
+import cakeSafariLaugh from "../assets/portfolio/cake-safari-laugh.jpg";
+import cakeSafariLook from "../assets/portfolio/cake-safari-look.jpg";
 
-import familyChristmas from "../assets/portfolio/family-christmas.png";
-import familyChristmasDuo from "../assets/portfolio/family-christmas-duo.png";
-import familyDoubleExposure from "../assets/portfolio/family-double-exposure.png";
-import familyReindeer from "../assets/portfolio/family-reindeer.png";
-import familyRoseBw from "../assets/portfolio/family-rose-bw.png";
-import familyRoseColor from "../assets/portfolio/family-rose-color.png";
-import familyWindowNight from "../assets/portfolio/family-window-night.png";
+import familyChristmas from "../assets/portfolio/family-christmas.jpg";
+import familyChristmasDuo from "../assets/portfolio/family-christmas-duo.jpg";
+import familyDoubleExposure from "../assets/portfolio/family-double-exposure.jpg";
+import familyReindeer from "../assets/portfolio/family-reindeer.jpg";
+import familyRoseBw from "../assets/portfolio/family-rose-bw.jpg";
+import familyRoseColor from "../assets/portfolio/family-rose-color.jpg";
 
 export const images = {
   // Heroes & feature
@@ -53,8 +52,6 @@ export const images = {
   familyDoubleExposure,
   familyReindeer,
   familyRoseColor,
-  familyWindowNight,
-  familyChristmasDuo,
   weddingRings,
 } as const;
 
