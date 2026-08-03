@@ -154,21 +154,55 @@ export function Booking() {
     }
 
     try {
-      await fetch("/api/notify-enquiry", {
+      const notifyPayload = {
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        date: form.date,
+        type: form.type,
+        location: form.location,
+        message: form.message,
+        estimated_total: total,
+        extras: extrasSummary || "None",
+      };
+
+      const notifyRes = await fetch("/api/notify-enquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: form.name,
-          email: form.email,
-          phone: form.phone,
-          date: form.date,
-          type: form.type,
-          location: form.location,
-          message: form.message,
-          estimated_total: total,
-          extras: extrasSummary || "None",
-        }),
+        body: JSON.stringify(notifyPayload),
       });
+      const notifyJson = (await notifyRes.json().catch(() => ({}))) as {
+        provider?: string;
+      };
+
+      // No Resend key configured — email from the browser via FormSubmit.
+      if (notifyJson.provider === "client-fallback") {
+        await fetch(
+          "https://formsubmit.co/ajax/konmophotography@gmail.com",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            body: JSON.stringify({
+              _subject: `New Ko&Mo enquiry from ${form.name}`,
+              _template: "table",
+              _captcha: false,
+              _replyto: form.email,
+              name: form.name,
+              email: form.email,
+              phone: form.phone || "",
+              session_type: form.type,
+              preferred_date: form.date || "",
+              location: form.location || "",
+              extras: extrasSummary || "None",
+              estimated_total: `£${total}`,
+              message: form.message || "",
+            }),
+          },
+        );
+      }
     } catch {
       // Enquiry is already saved — don't block success if email notify fails.
     }

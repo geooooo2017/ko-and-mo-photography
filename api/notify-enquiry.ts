@@ -92,60 +92,6 @@ async function sendWithResend(payload: EnquiryPayload) {
   return { provider: "resend", id: data.id as string | undefined };
 }
 
-async function sendWithFormSubmit(payload: EnquiryPayload) {
-  const response = await fetch(
-    `https://formsubmit.co/ajax/${encodeURIComponent(PHOTOGRAPHER_EMAIL)}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Origin: "https://ko-and-mo-photography.vercel.app",
-        Referer: "https://ko-and-mo-photography.vercel.app/",
-      },
-      body: JSON.stringify({
-        _subject: `New Ko&Mo enquiry from ${payload.name || "website visitor"}`,
-        _template: "table",
-        _captcha: false,
-        _replyto: payload.email || PHOTOGRAPHER_EMAIL,
-        name: payload.name || "",
-        email: payload.email || "",
-        phone: payload.phone || "",
-        session_type: payload.type || "",
-        preferred_date: payload.date || "",
-        location: payload.location || "",
-        extras: payload.extras || "None",
-        estimated_total:
-          payload.estimated_total != null ? `£${payload.estimated_total}` : "",
-        message: payload.message || "",
-      }),
-    },
-  );
-
-  const data = (await response.json().catch(() => ({}))) as {
-    success?: string | boolean;
-    message?: string;
-  };
-
-  const message = typeof data.message === "string" ? data.message : "";
-  const activating = /activation|activate form/i.test(message);
-  const ok =
-    response.ok &&
-    (data.success === true ||
-      data.success === "true" ||
-      activating);
-
-  if (!ok) {
-    throw new Error(message || "FormSubmit send failed");
-  }
-
-  return {
-    provider: "formsubmit",
-    activating,
-    message: message || "sent",
-  };
-}
-
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
@@ -162,8 +108,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(200).json({ ok: true, ...viaResend });
     }
 
-    const viaFormSubmit = await sendWithFormSubmit(payload);
-    return res.status(200).json({ ok: true, ...viaFormSubmit });
+    // No Resend key — tell the browser to send via FormSubmit (server-side
+    // FormSubmit is blocked without a browser Origin).
+    return res.status(200).json({ ok: true, provider: "client-fallback" });
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "Failed to send enquiry email";
