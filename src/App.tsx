@@ -73,7 +73,6 @@ function Site() {
                 src: images.newbornJackSleeping,
                 alt: "Jack sleeping peacefully as a newborn",
               },
-              { src: images.familyBaby, alt: "Black and white baby portrait" },
             ]}
             setPage={setPage}
           />
