@@ -7,7 +7,6 @@ import cakeJungleTub from "../assets/portfolio/cake-jungle-tub.jpg";
 import cakeRockBw from "../assets/portfolio/cake-rock-bw.jpg";
 import cakeRockDrumSmash from "../assets/portfolio/cake-rock-drum-smash.jpg";
 import cakeRockSmashFull from "../assets/portfolio/cake-rock-smash-full.jpg";
-import cakeRockTub from "../assets/portfolio/cake-rock-tub.jpg";
 import cakeSafariLaugh from "../assets/portfolio/cake-safari-laugh.jpg";
 import cakeSafariLook from "../assets/portfolio/cake-safari-look.jpg";
 
