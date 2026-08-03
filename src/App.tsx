@@ -70,6 +70,10 @@ function Site() {
               { src: images.familyCarry, alt: "Christmas family portrait" },
               { src: images.familyKiss, alt: "Christmas mother and toddler" },
               { src: images.familyReindeer, alt: "Holiday toddler portrait" },
+              {
+                src: images.familyDoubleExposure,
+                alt: "Creative mother and child double exposure",
+              },
               { src: images.familyRoseColor, alt: "Toddler with a white rose" },
             ]}
             setPage={setPage}

@@ -12,6 +12,7 @@ import cakeSafariLook from "../assets/portfolio/cake-safari-look.jpg";
 
 import familyChristmas from "../assets/portfolio/family-christmas.jpg";
 import familyChristmasDuo from "../assets/portfolio/family-christmas-duo.jpg";
+import familyDoubleExposure from "../assets/portfolio/family-double-exposure.jpg";
 import familyReindeer from "../assets/portfolio/family-reindeer.jpg";
 import familyRoseBw from "../assets/portfolio/family-rose-bw.jpg";
 import familyRoseColor from "../assets/portfolio/family-rose-color.jpg";
@@ -48,6 +49,7 @@ export const images = {
   cakeRockSmash: cakeRockSmashFull,
   cakeRockBw,
   cakeSafariLook,
+  familyDoubleExposure,
   familyReindeer,
   familyRoseColor,
   weddingRings,
