@@ -126,6 +126,15 @@ export function Booking() {
     setSubmitError("");
     setSubmitting(true);
 
+    const extrasSummary = extraPackages
+      .filter((extra) => extras[extra.id] > 0)
+      .map((extra) =>
+        extra.perUnit
+          ? `${extra.name} × ${extras[extra.id]} (£${extra.priceValue * extras[extra.id]})`
+          : `${extra.name} (£${extra.priceValue})`,
+      )
+      .join(", ");
+
     if (supabase && isSupabaseConfigured) {
       const { error } = await supabase.from("enquiries").insert({
         name: form.name,
@@ -137,15 +146,34 @@ export function Booking() {
         message: form.message || null,
         estimated_total: total,
       });
-      setSubmitting(false);
       if (error) {
+        setSubmitting(false);
         setSubmitError(error.message);
         return;
       }
-    } else {
-      setSubmitting(false);
     }
 
+    try {
+      await fetch("/api/notify-enquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          date: form.date,
+          type: form.type,
+          location: form.location,
+          message: form.message,
+          estimated_total: total,
+          extras: extrasSummary || "None",
+        }),
+      });
+    } catch {
+      // Enquiry is already saved — don't block success if email notify fails.
+    }
+
+    setSubmitting(false);
     setSubmitted(true);
   };
 
