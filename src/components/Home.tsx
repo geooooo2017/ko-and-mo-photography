@@ -25,6 +25,7 @@ import {
 import augustFlyer from "../assets/august-mini-sessions.png";
 import { isSupabaseConfigured, supabase } from "../lib/supabase";
 import { socialLinks } from "../data/social";
+import { faqs } from "../data/faqs";
 
 type GalleryItem = {
   id: number;
@@ -1039,6 +1040,76 @@ export function Home({ setPage }: { setPage: (page: Page) => void }) {
               After
             </div>
           </div>
+        </div>
+      </section>
+
+      <section
+        id="faqs"
+        className="py-24 md:py-32"
+        style={{ backgroundColor: "#fff" }}
+      >
+        <div className="mx-auto max-w-3xl px-6 md:px-12">
+          <div className="mb-12 text-center">
+            <SectionLabel>Good to know</SectionLabel>
+            <Heading>Frequently Asked Questions</Heading>
+            <p
+              className="mx-auto max-w-xl text-sm leading-relaxed"
+              style={{
+                color: colors.taupe,
+                fontFamily: "'Montserrat', sans-serif",
+                fontWeight: 300,
+              }}
+            >
+              Everything you might like to know — whether you’re booking a
+              newborn, family or wedding session.
+            </p>
+          </div>
+          <div>
+            {faqs.map((item) => (
+              <details
+                key={item.question}
+                className="group border-b py-5"
+                style={{ borderColor: "rgba(184,169,154,0.35)" }}
+              >
+                <summary
+                  className="flex cursor-pointer list-none items-start justify-between gap-4 text-left marker:content-none [&::-webkit-details-marker]:hidden"
+                  style={{
+                    fontFamily: "'Cormorant Garamond', serif",
+                    color: colors.brown,
+                    fontSize: "1.3rem",
+                  }}
+                >
+                  <span>{item.question}</span>
+                  <ChevronDown
+                    size={18}
+                    className="mt-1 shrink-0 transition-transform group-open:rotate-180"
+                    style={{ color: colors.taupe }}
+                  />
+                </summary>
+                <p
+                  className="mt-3 pr-8 text-sm leading-relaxed"
+                  style={{
+                    color: colors.taupe,
+                    fontFamily: "'Montserrat', sans-serif",
+                    fontWeight: 300,
+                  }}
+                >
+                  {item.answer}
+                </p>
+              </details>
+            ))}
+          </div>
+          <p
+            className="mt-10 text-center text-sm leading-relaxed"
+            style={{
+              color: colors.taupe,
+              fontFamily: "'Montserrat', sans-serif",
+              fontWeight: 300,
+            }}
+          >
+            If you have a question that isn’t answered here, I’d love to hear
+            from you — I’m always happy to help.
+          </p>
         </div>
       </section>
 

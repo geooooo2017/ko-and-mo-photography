@@ -14,6 +14,7 @@ import {
   newbornPackages,
   weddingPackages,
 } from "./data/packages";
+import { weddingFaqs } from "./data/faqs";
 
 function Site() {
   const [page, setPage] = useState<Page>("home");
@@ -30,6 +31,7 @@ function Site() {
             title="Weddings"
             intro="Your wedding day passes in a heartbeat, but your photographs will tell your story for generations. Natural, unobtrusive storytelling focused on genuine emotion."
             packages={weddingPackages}
+            faqs={weddingFaqs}
             gallery={[
               { src: images.coupleHill, alt: "Scottish handfasting ceremony" },
               { src: images.heroBride, alt: "Bride preparing in the mirror" },

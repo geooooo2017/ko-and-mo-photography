@@ -22,6 +22,7 @@ export function ServicePage({
   intro,
   packages,
   gallery,
+  faqs,
   setPage,
 }: {
   hero: string;
@@ -30,6 +31,7 @@ export function ServicePage({
   intro: string;
   packages: Package[];
   gallery: GalleryImage[];
+  faqs?: readonly { question: string; answer: string }[];
   setPage: (page: Page) => void;
 }) {
   const go = (page: Page) => {
@@ -206,6 +208,47 @@ export function ServicePage({
           </div>
         </div>
       </section>
+
+      {faqs && faqs.length > 0 && (
+        <section className="py-24" style={{ backgroundColor: colors.cream }}>
+          <div className="mx-auto max-w-3xl px-6 md:px-12">
+            <div className="mb-10 text-center">
+              <SectionLabel>Good to know</SectionLabel>
+              <Heading>Frequently Asked Questions</Heading>
+            </div>
+            <div className="space-y-0">
+              {faqs.map((item) => (
+                <details
+                  key={item.question}
+                  className="group border-b py-5"
+                  style={{ borderColor: "rgba(184,169,154,0.35)" }}
+                >
+                  <summary
+                    className="cursor-pointer list-none text-left text-base marker:content-none [&::-webkit-details-marker]:hidden"
+                    style={{
+                      fontFamily: "'Cormorant Garamond', serif",
+                      color: colors.brown,
+                      fontSize: "1.25rem",
+                    }}
+                  >
+                    {item.question}
+                  </summary>
+                  <p
+                    className="mt-3 text-sm leading-relaxed"
+                    style={{
+                      color: colors.taupe,
+                      fontFamily: "'Montserrat', sans-serif",
+                      fontWeight: 300,
+                    }}
+                  >
+                    {item.answer}
+                  </p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       <section
         className="py-20 text-center"
