@@ -110,7 +110,7 @@ const instagramGrid = [
   images.familyKiss,
   images.cakeBirthday,
   images.newbornJackHand,
-  images.familyRoseColor,
+  images.newbornJackSleeping,
 ];
 
 export function Home({ setPage }: { setPage: (page: Page) => void }) {
