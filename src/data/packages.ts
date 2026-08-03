@@ -184,3 +184,40 @@ export const journeySteps = [
     text: "Choose your favourites and turn them into beautiful artwork to enjoy for years to come.",
   },
 ];
+
+export const extraPackages = [
+  {
+    id: "canvas" as const,
+    icon: "🖼️",
+    name: "Canvas Prints",
+    price: "£75",
+    priceValue: 75,
+    text: "Gallery-wrapped canvases ready to hang — a beautiful way to display your favourite frame.",
+  },
+  {
+    id: "usb" as const,
+    icon: "💾",
+    name: "USB Package",
+    price: "£40",
+    priceValue: 40,
+    text: "Your edited images delivered on a keepsake USB, perfect for safekeeping and sharing.",
+  },
+  {
+    id: "extraDigital" as const,
+    icon: "✨",
+    name: "Extra Digital Photos",
+    price: "£50",
+    priceValue: 50,
+    text: "Add more professionally edited high-resolution images to your collection.",
+  },
+  {
+    id: "prints" as const,
+    icon: "📷",
+    name: "Printed Copies",
+    price: "£35",
+    priceValue: 35,
+    text: "Beautifully printed copies to hold, gift, and pass down through the family.",
+  },
+];
+
+export type ExtraPackageId = (typeof extraPackages)[number]["id"];

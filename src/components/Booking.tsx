@@ -7,13 +7,12 @@ import {
   supabase,
   type AvailabilityStatus,
 } from "../lib/supabase";
+import {
+  extraPackages,
+  type ExtraPackageId,
+} from "../data/packages";
 
-type Extras = {
-  canvas: boolean;
-  usb: boolean;
-  extraDigital: boolean;
-  prints: boolean;
-};
+type Extras = Record<ExtraPackageId, boolean>;
 
 type FormState = {
   name: string;
@@ -43,19 +42,9 @@ const deposits: Record<string, number> = {
   "Cake Smash": 50,
 };
 
-const extraPrices = {
-  canvas: 75,
-  usb: 40,
-  extraDigital: 50,
-  prints: 35,
-};
-
-const extraLabels: Record<keyof Extras, string> = {
-  canvas: "Canvas Prints",
-  usb: "USB Package",
-  extraDigital: "Extra Digital Photos",
-  prints: "Printed Copies",
-};
+const emptyExtras = Object.fromEntries(
+  extraPackages.map((extra) => [extra.id, false]),
+) as Extras;
 
 const sessionTypes = [
   "Wedding Full Day",
@@ -72,19 +61,14 @@ function toDateKey(year: number, month: number, day: number) {
 
 export function Booking() {
   const [sessionType, setSessionType] = useState<string>("Wedding Full Day");
-  const [extras, setExtras] = useState<Extras>({
-    canvas: false,
-    usb: false,
-    extraDigital: false,
-    prints: false,
-  });
+  const [extras, setExtras] = useState<Extras>(emptyExtras);
   const deposit = deposits[sessionType] ?? 0;
   const total =
     basePrices[sessionType] +
-    (extras.canvas ? extraPrices.canvas : 0) +
-    (extras.usb ? extraPrices.usb : 0) +
-    (extras.extraDigital ? extraPrices.extraDigital : 0) +
-    (extras.prints ? extraPrices.prints : 0);
+    extraPackages.reduce(
+      (sum, extra) => sum + (extras[extra.id] ? extra.priceValue : 0),
+      0,
+    );
 
   const [form, setForm] = useState<FormState>({
     name: "",
@@ -428,57 +412,77 @@ export function Booking() {
                   Wedding balances due 3 weeks before the day.
                 </p>
                 <p
-                  className="mb-4 text-xs tracking-widest uppercase"
+                  className="mb-2 text-xs tracking-widest uppercase"
                   style={{
                     color: colors.taupe,
                     fontFamily: "'Montserrat', sans-serif",
                   }}
                 >
-                  Add Extras
+                  Extra Packages
+                </p>
+                <p
+                  className="mb-4 text-xs leading-relaxed"
+                  style={{
+                    color: colors.taupe,
+                    fontFamily: "'Montserrat', sans-serif",
+                  }}
+                >
+                  Optional keepsakes you can add to any session.
                 </p>
                 <div className="mb-6 space-y-3">
-                  {(Object.keys(extras) as (keyof Extras)[]).map((key) => (
+                  {extraPackages.map((extra) => (
                     <label
-                      key={key}
-                      className="group flex cursor-pointer items-center justify-between"
+                      key={extra.id}
+                      className="group flex cursor-pointer items-start justify-between gap-3"
                     >
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-start gap-3">
                         <div
-                          className="flex h-4 w-4 items-center justify-center transition-all"
+                          className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center transition-all"
                           style={{
-                            border: `1px solid ${extras[key] ? colors.brown : "rgba(184,169,154,0.5)"}`,
-                            backgroundColor: extras[key]
+                            border: `1px solid ${extras[extra.id] ? colors.brown : "rgba(184,169,154,0.5)"}`,
+                            backgroundColor: extras[extra.id]
                               ? colors.green
                               : "transparent",
                           }}
                           onClick={() =>
                             setExtras((prev) => ({
                               ...prev,
-                              [key]: !prev[key],
+                              [extra.id]: !prev[extra.id],
                             }))
                           }
                         >
-                          {extras[key] && <Check size={10} color="#fff" />}
+                          {extras[extra.id] && <Check size={10} color="#fff" />}
                         </div>
-                        <span
-                          className="text-sm"
-                          style={{
-                            color: colors.brown,
-                            fontFamily: "'Montserrat', sans-serif",
-                            fontWeight: 300,
-                          }}
-                        >
-                          {extraLabels[key]}
-                        </span>
+                        <div>
+                          <span
+                            className="block text-sm"
+                            style={{
+                              color: colors.brown,
+                              fontFamily: "'Montserrat', sans-serif",
+                              fontWeight: 300,
+                            }}
+                          >
+                            {extra.name}
+                          </span>
+                          <span
+                            className="mt-0.5 block text-xs leading-relaxed"
+                            style={{
+                              color: colors.taupe,
+                              fontFamily: "'Montserrat', sans-serif",
+                            }}
+                          >
+                            {extra.text}
+                          </span>
+                        </div>
                       </div>
                       <span
-                        className="text-sm"
+                        className="shrink-0 text-sm"
                         style={{
                           color: colors.taupe,
                           fontFamily: "'Montserrat', sans-serif",
                         }}
                       >
-                        +£{extraPrices[key]}
+                        +£{extra.priceValue}
                       </span>
                     </label>
                   ))}

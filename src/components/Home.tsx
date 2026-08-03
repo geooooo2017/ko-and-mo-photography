@@ -17,6 +17,7 @@ import {
 } from "./ui";
 import { FacebookIcon, InstagramIcon, TikTokIcon } from "./SocialIcons";
 import {
+  extraPackages,
   journeySteps,
   miniPerfectFor,
   miniSessionIncludes,
@@ -427,8 +428,76 @@ export function Home({ setPage }: { setPage: (page: Page) => void }) {
       </section>
 
       <section
-        className="py-20 md:py-24"
+        id="extras"
+        className="py-24 md:py-32"
         style={{ backgroundColor: colors.cream }}
+      >
+        <div className="mx-auto max-w-6xl px-6 md:px-12">
+          <div className="mb-14 text-center">
+            <SectionLabel>Add something special</SectionLabel>
+            <Heading>Extra Packages</Heading>
+            <p
+              className="mx-auto max-w-xl text-sm leading-relaxed"
+              style={{
+                color: colors.taupe,
+                fontFamily: "'Montserrat', sans-serif",
+                fontWeight: 300,
+              }}
+            >
+              Finish your collection with beautiful keepsakes — add these when
+              you book, or ask about them after your gallery is ready.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {extraPackages.map((extra) => (
+              <div key={extra.id} className="text-center sm:text-left">
+                <p className="mb-3 text-2xl" aria-hidden>
+                  {extra.icon}
+                </p>
+                <h3
+                  className="mb-1"
+                  style={{
+                    fontFamily: "'Cormorant Garamond', serif",
+                    fontSize: "1.45rem",
+                    color: colors.brown,
+                    fontWeight: 400,
+                  }}
+                >
+                  {extra.name}
+                </h3>
+                <p
+                  className="mb-3 text-sm tracking-widest uppercase"
+                  style={{
+                    color: colors.green,
+                    fontFamily: "'Montserrat', sans-serif",
+                  }}
+                >
+                  from {extra.price}
+                </p>
+                <p
+                  className="text-sm leading-relaxed"
+                  style={{
+                    color: colors.taupe,
+                    fontFamily: "'Montserrat', sans-serif",
+                    fontWeight: 300,
+                  }}
+                >
+                  {extra.text}
+                </p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-12 text-center">
+            <PrimaryButton onClick={() => go("booking")}>
+              Add extras when you book <ArrowRight size={14} />
+            </PrimaryButton>
+          </div>
+        </div>
+      </section>
+
+      <section
+        className="py-20 md:py-24"
+        style={{ backgroundColor: "#fff" }}
       >
         <div className="mx-auto max-w-6xl px-6 md:px-12">
           <div className="mb-12 text-center">
