@@ -5,6 +5,7 @@ import weddingRings from "../assets/portfolio/wedding-rings.jpg";
 import cakeJungleSmash from "../assets/portfolio/cake-jungle-smash.jpg";
 import cakeJungleTub from "../assets/portfolio/cake-jungle-tub.jpg";
 import cakeRockBw from "../assets/portfolio/cake-rock-bw.jpg";
+import cakeRockDrumSmash from "../assets/portfolio/cake-rock-drum-smash.jpg";
 import cakeRockSmashFull from "../assets/portfolio/cake-rock-smash-full.jpg";
 import cakeRockTub from "../assets/portfolio/cake-rock-tub.jpg";
 import cakeSafariLaugh from "../assets/portfolio/cake-safari-laugh.jpg";
@@ -41,7 +42,7 @@ export const images = {
   familyKiss: familyChristmasDuo,
 
   // Cake smash
-  cakeKid: cakeRockTub,
+  cakeKid: cakeRockDrumSmash,
   cakeGirl: cakeSafariLaugh,
   cakeBirthday: cakeJungleSmash,
 

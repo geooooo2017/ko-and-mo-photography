@@ -43,7 +43,7 @@ const gallery: GalleryItem[] = [
   { id: 6, src: images.babyField, alt: "Baby in safari crown", cat: "Newborn", tall: true },
   { id: 7, src: images.familyKiss, alt: "Christmas mother and toddler", cat: "Family", tall: true },
   { id: 8, src: images.weddingRings, alt: "Wedding rings on the certificate", cat: "Weddings", tall: false },
-  { id: 9, src: images.cakeKid, alt: "Rock and roll cake smash", cat: "Cake Smash", tall: false },
+  { id: 9, src: images.cakeKid, alt: "Born to rock cake smash on the drum", cat: "Cake Smash", tall: false },
   { id: 10, src: images.familyRoseColor, alt: "Toddler with a white rose", cat: "Family", tall: false },
   { id: 11, src: images.cakeRockSmash, alt: "Born to rock birthday session", cat: "Cake Smash", tall: false },
   { id: 12, src: images.cakeBirthday, alt: "Jungle cake smash", cat: "Cake Smash", tall: false },

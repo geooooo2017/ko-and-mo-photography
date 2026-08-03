@@ -88,7 +88,7 @@ function Site() {
             intro="A fun-filled session to celebrate your little one's milestone in the sweetest way — giggles, frosting and memories you'll treasure forever. Sessions ideally take place just before or after a first birthday."
             packages={cakeSmashPackages}
             gallery={[
-              { src: images.cakeKid, alt: "Rock and roll cake smash" },
+              { src: images.cakeKid, alt: "Born to rock cake smash on the drum" },
               { src: images.cakeRockSmash, alt: "Born to rock birthday session" },
               { src: images.cakeRockBw, alt: "Black and white cake smash" },
               { src: images.cakeGirl, alt: "Safari cake smash laughter" },
