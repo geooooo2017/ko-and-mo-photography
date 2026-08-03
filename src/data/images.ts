@@ -19,6 +19,8 @@ import familyRoseColor from "../assets/portfolio/family-rose-color.jpg";
 
 import newbornJackHand from "../assets/portfolio/newborn-jack-hand.jpg";
 import newbornJackPortrait from "../assets/portfolio/newborn-jack-portrait.jpg";
+import newbornJackProfile from "../assets/portfolio/newborn-jack-profile.jpg";
+import newbornJackSleeping from "../assets/portfolio/newborn-jack-sleeping.jpg";
 
 export const images = {
   // Heroes & feature
@@ -41,6 +43,8 @@ export const images = {
   familyBaby: familyRoseBw,
   newbornJackPortrait,
   newbornJackHand,
+  newbornJackProfile,
+  newbornJackSleeping,
 
   // Family
   familyCarry: familyChristmas,

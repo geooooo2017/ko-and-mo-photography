@@ -51,7 +51,8 @@ const gallery: GalleryItem[] = [
   { id: 13, src: images.familyReindeer, alt: "Holiday toddler portrait", cat: "Family", tall: true },
   { id: 14, src: images.weddingDoubleExposure, alt: "Artistic bridal double exposure portrait", cat: "Weddings", tall: false },
   { id: 15, src: images.cakeSafariLook, alt: "Wild One birthday portrait", cat: "Cake Smash", tall: false },
-  { id: 16, src: images.familyBaby, alt: "Black and white rose portrait", cat: "Newborn", tall: false },
+  { id: 16, src: images.newbornJackSleeping, alt: "Jack sleeping peacefully as a newborn", cat: "Newborn", tall: false },
+  { id: 17, src: images.newbornJackProfile, alt: "Black and white newborn profile of Jack", cat: "Newborn", tall: true },
 ];
 
 type Testimonial = {

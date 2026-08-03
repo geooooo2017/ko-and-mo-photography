@@ -65,8 +65,15 @@ function Site() {
                 src: images.newbornJackHand,
                 alt: "Black and white newborn hand detail",
               },
+              {
+                src: images.newbornJackProfile,
+                alt: "Black and white newborn profile of Jack",
+              },
+              {
+                src: images.newbornJackSleeping,
+                alt: "Jack sleeping peacefully as a newborn",
+              },
               { src: images.familyBaby, alt: "Black and white baby portrait" },
-              { src: images.familyRoseColor, alt: "Toddler with a white rose" },
             ]}
             setPage={setPage}
           />
