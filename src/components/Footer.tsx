@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import logo from "../assets/logo.png";
 import { colors, type Page } from "../data/images";
 import { FacebookIcon, InstagramIcon, TikTokIcon } from "./SocialIcons";
@@ -128,18 +129,30 @@ export function Footer({ setPage }: { setPage: (page: Page) => void }) {
       </div>
 
       <div
-        className="border-t py-6 text-center"
+        className="border-t py-6"
         style={{ borderColor: "rgba(245,241,234,0.1)" }}
       >
-        <p
-          className="text-xs"
-          style={{
-            color: "rgba(245,241,234,0.35)",
-            fontFamily: "'Montserrat', sans-serif",
-          }}
-        >
-          © {new Date().getFullYear()} Ko&Mo Photography. All rights reserved.
-        </p>
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-6 text-center sm:flex-row sm:text-left md:px-12">
+          <p
+            className="text-xs"
+            style={{
+              color: "rgba(245,241,234,0.35)",
+              fontFamily: "'Montserrat', sans-serif",
+            }}
+          >
+            © {new Date().getFullYear()} Ko&Mo Photography. All rights reserved.
+          </p>
+          <Link
+            to="/admin"
+            className="text-xs tracking-widest uppercase transition-opacity hover:opacity-70"
+            style={{
+              color: "rgba(245,241,234,0.28)",
+              fontFamily: "'Montserrat', sans-serif",
+            }}
+          >
+            Staff sign in
+          </Link>
+        </div>
       </div>
     </footer>
   );
