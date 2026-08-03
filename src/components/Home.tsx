@@ -52,37 +52,6 @@ const gallery: GalleryItem[] = [
   { id: 16, src: images.familyBaby, alt: "Black and white rose portrait", cat: "Newborn", tall: false },
 ];
 
-const fallbackTestimonials = [
-  {
-    quote:
-      "Absolutely amazing photographs and such a lovely experience from start to finish. We treasure every single image.",
-    name: "Sarah & Mark",
-    type: "Wedding",
-    rating: 5,
-  },
-  {
-    quote:
-      "Ko&Mo captured our newborn so gently and beautifully. The photos are beyond anything we imagined — pure magic.",
-    name: "Emma & James",
-    type: "Newborn",
-    rating: 5,
-  },
-  {
-    quote:
-      "Our family session was so relaxed and fun. The photos look like they belong in a magazine. Highly recommend!",
-    name: "The McGregor Family",
-    type: "Family",
-    rating: 5,
-  },
-  {
-    quote:
-      "The cake smash photos made us cry with laughter. Every single one is a keeper. Thank you so much!",
-    name: "Fiona & Callum",
-    type: "Cake Smash",
-    rating: 5,
-  },
-];
-
 type Testimonial = {
   quote: string;
   name: string;
@@ -177,8 +146,7 @@ export function Home({ setPage }: { setPage: (page: Page) => void }) {
   }, [updateSlider]);
 
   const [testimonialIndex, setTestimonialIndex] = useState(0);
-  const [testimonials, setTestimonials] =
-    useState<Testimonial[]>(fallbackTestimonials);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
 
   useEffect(() => {
     if (!supabase || !isSupabaseConfigured) return;
@@ -190,9 +158,9 @@ export function Home({ setPage }: { setPage: (page: Page) => void }) {
         .eq("status", "published")
         .order("published_at", { ascending: false })
         .limit(20);
-      if (cancelled || error || !data?.length) return;
+      if (cancelled || error) return;
       setTestimonials(
-        data.map((row) => ({
+        (data ?? []).map((row) => ({
           name: row.name,
           type: row.session_type,
           quote: row.quote,
@@ -798,6 +766,7 @@ export function Home({ setPage }: { setPage: (page: Page) => void }) {
           );
         })()}
 
+      {testimonials.length > 0 && (
       <section className="py-24 md:py-32" style={{ backgroundColor: colors.brown }}>
         <div className="mx-auto max-w-4xl px-6 text-center md:px-12">
           <SectionLabel>Kind Words</SectionLabel>
@@ -909,6 +878,7 @@ export function Home({ setPage }: { setPage: (page: Page) => void }) {
           </div>
         </div>
       </section>
+      )}
 
       <section className="py-24 md:py-32" style={{ backgroundColor: "#fff" }}>
         <div className="mx-auto max-w-5xl px-6 md:px-12">
