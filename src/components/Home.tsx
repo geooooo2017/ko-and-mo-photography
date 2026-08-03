@@ -473,7 +473,7 @@ export function Home({ setPage }: { setPage: (page: Page) => void }) {
                     fontFamily: "'Montserrat', sans-serif",
                   }}
                 >
-                  from {extra.price}
+                  {extra.perUnit ? extra.price : `from ${extra.price}`}
                 </p>
                 <p
                   className="text-sm leading-relaxed"

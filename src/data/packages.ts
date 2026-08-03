@@ -206,9 +206,10 @@ export const extraPackages = [
     id: "extraDigital" as const,
     icon: "✨",
     name: "Extra Digital Photos",
-    price: "£50",
-    priceValue: 50,
-    text: "Add more professionally edited high-resolution images to your collection.",
+    price: "£5 each",
+    priceValue: 5,
+    perUnit: true,
+    text: "£5 per extra professionally edited high-resolution image added to your collection.",
   },
   {
     id: "prints" as const,

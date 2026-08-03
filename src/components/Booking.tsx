@@ -12,7 +12,7 @@ import {
   type ExtraPackageId,
 } from "../data/packages";
 
-type Extras = Record<ExtraPackageId, boolean>;
+type Extras = Record<ExtraPackageId, number>;
 
 type FormState = {
   name: string;
@@ -43,7 +43,7 @@ const deposits: Record<string, number> = {
 };
 
 const emptyExtras = Object.fromEntries(
-  extraPackages.map((extra) => [extra.id, false]),
+  extraPackages.map((extra) => [extra.id, 0]),
 ) as Extras;
 
 const sessionTypes = [
@@ -66,7 +66,7 @@ export function Booking() {
   const total =
     basePrices[sessionType] +
     extraPackages.reduce(
-      (sum, extra) => sum + (extras[extra.id] ? extra.priceValue : 0),
+      (sum, extra) => sum + extras[extra.id] * extra.priceValue,
       0,
     );
 
@@ -429,31 +429,14 @@ export function Booking() {
                 >
                   Optional keepsakes you can add to any session.
                 </p>
-                <div className="mb-6 space-y-3">
-                  {extraPackages.map((extra) => (
-                    <label
-                      key={extra.id}
-                      className="group flex cursor-pointer items-start justify-between gap-3"
-                    >
-                      <div className="flex items-start gap-3">
-                        <div
-                          className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center transition-all"
-                          style={{
-                            border: `1px solid ${extras[extra.id] ? colors.brown : "rgba(184,169,154,0.5)"}`,
-                            backgroundColor: extras[extra.id]
-                              ? colors.green
-                              : "transparent",
-                          }}
-                          onClick={() =>
-                            setExtras((prev) => ({
-                              ...prev,
-                              [extra.id]: !prev[extra.id],
-                            }))
-                          }
-                        >
-                          {extras[extra.id] && <Check size={10} color="#fff" />}
-                        </div>
-                        <div>
+                <div className="mb-6 space-y-4">
+                  {extraPackages.map((extra) =>
+                    extra.perUnit ? (
+                      <div
+                        key={extra.id}
+                        className="flex items-start justify-between gap-3"
+                      >
+                        <div className="min-w-0 flex-1">
                           <span
                             className="block text-sm"
                             style={{
@@ -474,18 +457,100 @@ export function Booking() {
                             {extra.text}
                           </span>
                         </div>
+                        <div className="flex shrink-0 flex-col items-end gap-2">
+                          <span
+                            className="text-sm"
+                            style={{
+                              color: colors.taupe,
+                              fontFamily: "'Montserrat', sans-serif",
+                            }}
+                          >
+                            £{extra.priceValue} each
+                          </span>
+                          <input
+                            type="number"
+                            min={0}
+                            max={100}
+                            value={extras[extra.id]}
+                            onChange={(e) =>
+                              setExtras((prev) => ({
+                                ...prev,
+                                [extra.id]: Math.max(
+                                  0,
+                                  Math.min(100, Number(e.target.value) || 0),
+                                ),
+                              }))
+                            }
+                            className="w-16 px-2 py-1.5 text-center text-sm outline-none"
+                            style={{
+                              border: "1px solid rgba(184,169,154,0.45)",
+                              backgroundColor: colors.cream,
+                              color: colors.brown,
+                              fontFamily: "'Montserrat', sans-serif",
+                            }}
+                            aria-label={`Number of ${extra.name}`}
+                          />
+                        </div>
                       </div>
-                      <span
-                        className="shrink-0 text-sm"
-                        style={{
-                          color: colors.taupe,
-                          fontFamily: "'Montserrat', sans-serif",
-                        }}
+                    ) : (
+                      <label
+                        key={extra.id}
+                        className="group flex cursor-pointer items-start justify-between gap-3"
                       >
-                        +£{extra.priceValue}
-                      </span>
-                    </label>
-                  ))}
+                        <div className="flex items-start gap-3">
+                          <div
+                            className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center transition-all"
+                            style={{
+                              border: `1px solid ${extras[extra.id] ? colors.brown : "rgba(184,169,154,0.5)"}`,
+                              backgroundColor: extras[extra.id]
+                                ? colors.green
+                                : "transparent",
+                            }}
+                            onClick={() =>
+                              setExtras((prev) => ({
+                                ...prev,
+                                [extra.id]: prev[extra.id] ? 0 : 1,
+                              }))
+                            }
+                          >
+                            {extras[extra.id] > 0 && (
+                              <Check size={10} color="#fff" />
+                            )}
+                          </div>
+                          <div>
+                            <span
+                              className="block text-sm"
+                              style={{
+                                color: colors.brown,
+                                fontFamily: "'Montserrat', sans-serif",
+                                fontWeight: 300,
+                              }}
+                            >
+                              {extra.name}
+                            </span>
+                            <span
+                              className="mt-0.5 block text-xs leading-relaxed"
+                              style={{
+                                color: colors.taupe,
+                                fontFamily: "'Montserrat', sans-serif",
+                              }}
+                            >
+                              {extra.text}
+                            </span>
+                          </div>
+                        </div>
+                        <span
+                          className="shrink-0 text-sm"
+                          style={{
+                            color: colors.taupe,
+                            fontFamily: "'Montserrat', sans-serif",
+                          }}
+                        >
+                          +£{extra.priceValue}
+                        </span>
+                      </label>
+                    ),
+                  )}
                 </div>
                 <div
                   className="flex items-center justify-between p-4"
